@@ -3,7 +3,7 @@ import { SquircleButton } from "@/components/ui/SquircleButton";
 
 const PALETTE = ["blue","green","red","orange","yellow","teal","pink","purple","slate","amber","white"] as const;
 
-export default function App() {
+export default function BotaoSquirk() {
   return (
     <div className="min-h-screen p-4 md:p-12 flex flex-col items-center">
       <div className="w-full max-w-4xl space-y-12 pb-12">
