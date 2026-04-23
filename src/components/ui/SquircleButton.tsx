@@ -1,11 +1,56 @@
+/**
+ * SquircleButton
+ * sugestão de fonte: npm install @fontsource-variable/ibm-plex-sans
+ * no index.css adicione: @import '@fontsource-variable/ibm-plex-sans/wght.css';
+ * 
+ * @theme inline {
+ *   --font-sans: 'IBM Plex Sans Variable', sans-serif;
+ * }
+ * 
+ * Botão SVG 3D com forma squircle, efeito de profundidade e suporte a ícones Lucide.
+ *
+ * @example Basic
+ * ```tsx
+ * import { Rocket } from "lucide-react"
+ * import { SquircleButton } from "@/components/ui/SquircleButton"
+ *
+ * <SquircleButton variant="blue" label="Launch" icon={Rocket} />
+ * ```
+ *
+ * @example Sizes
+ * ```tsx
+ * <SquircleButton variant="teal"   size="tiny"    label="Tiny"    icon={Zap} />
+ * <SquircleButton variant="teal"   size="default" label="Default" icon={Zap} />
+ * <SquircleButton variant="teal"   size="large"   label="Large"   icon={Zap} />
+ * <SquircleButton variant="orange" size="full"    label="Full Width" icon={Zap} />
+ * <SquircleButton variant="blue"   size="square"  icon={Zap} />
+ * <SquircleButton variant="blue"   size="floating" icon={Rocket} onClick={fn} />
+ * ```
+ *
+ * @example Palette iteration
+ * ```tsx
+ * import { BUTTON_VARIANTS } from "@/components/ui/squircle-button-variants"
+ *
+ * {BUTTON_VARIANTS.map((v) => (
+ *   <SquircleButton key={v} variant={v} size="palette" label={v} icon={Palette} />
+ * ))}
+ * ```
+ *
+ * Props:
+ * - `variant`  — cor do botão: blue | green | red | orange | yellow | teal | pink | purple | slate | amber | white
+ * - `size`     — tamanho/modo: tiny(h30) | default(h44) | large(h60) | palette(h44) | square(h44,icon-only) | full(h44,fullWidth) | floating(h64,fixed)
+ * - `label`    — texto exibido em caixa alta (ignorado em square/floating)
+ * - `icon`     — componente LucideIcon
+ * - `onClick`  — callback de clique
+ * - `className`— classes extras no wrapper
+ */
+
 // components/SquircleButton.tsx
 import { useRef, useState, useEffect, useId, useCallback } from "react";
+import type { LucideIcon } from "lucide-react";
+import { VARIANT_COLORS, SIZE_CONFIG } from "./squircle-button-variants";
+import type { ButtonVariant, ButtonSize } from "./squircle-button-variants";
 
-const HEXES = "3b82f61d4ed822c55e15803def4444b91c1cff6a00cc5500ffc800cca00014b8a60f766edb3b7cb02e649356d46b3fa13341551e293bffbf00cc9900ffffffd3e2ef".match(/.{6}/g)!;
-const COLORS: Record<string, number> = {
-  blue:0, green:1, red:2, orange:3, yellow:4,
-  teal:5, pink:6, purple:7, slate:8, amber:9, white:10,
-};
 
 const CTX = document.createElement("canvas").getContext("2d")!;
 
@@ -26,52 +71,42 @@ const squirclePath = (w: number, h: number, r: number, x: number, y: number): st
 const colorMix = (hex: string, pct: number, k: string) =>
   `color-mix(in srgb, #${hex} ${pct}%, ${k})`;
 
-export type ButtonColor = keyof typeof COLORS;
-
-interface SquircleButtonProps {
-  color?: ButtonColor;
+export interface SquircleButtonProps {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   label?: string;
-  icon?: string;
-  height?: number;
-  square?: boolean;
-  floating?: boolean;
-  fullWidth?: boolean;
+  icon?: LucideIcon;
   onClick?: () => void;
   className?: string;
 }
 
 export function SquircleButton({
-  color = "blue",
+  variant = "blue",
+  size = "default",
   label = "",
-  icon = "",
-  height = 44,
-  square = false,
-  floating = false,
-  fullWidth = false,
+  icon: Icon,
   onClick,
   className = "",
 }: SquircleButtonProps) {
+  const { height, square, floating, fullWidth } = SIZE_CONFIG[size];
+
   const uid = useId().replace(/:/g, "");
   const [pressed, setPressed] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [btnW, setBtnW] = useState(0);
 
   const p = pressed ? 1 : 0;
-  const idx = COLORS[color] ?? 0;
-  const hb = HEXES[idx * 2];
-  const hd = HEXES[idx * 2 + 1];
-  const isWhite = color === "white";
+  const [hb, hd] = VARIANT_COLORS[variant];
+  const isWhite = variant === "white";
   const scale = height / 40;
   const upperLabel = label.toUpperCase();
 
-  // Calcula largura inicial via canvas
   const computeW = useCallback((containerW?: number) => {
     if (fullWidth && containerW) return containerW / scale - 10;
     CTX.font = "900 15px system-ui";
-    return square ? 48 : Math.ceil((CTX.measureText(upperLabel).width + (icon ? 100 : 80)) * 1.1);
-  }, [fullWidth, scale, square, upperLabel, icon]);
+    return square ? 48 : Math.ceil((CTX.measureText(upperLabel).width + (Icon ? 100 : 80)) * 1.1);
+  }, [fullWidth, scale, square, upperLabel, Icon]);
 
-  // ResizeObserver para fullWidth
   useEffect(() => {
     if (!fullWidth || !wrapperRef.current) return;
     const ro = new ResizeObserver(([entry]) => {
@@ -83,7 +118,9 @@ export function SquircleButton({
 
   const resolvedBtnW = fullWidth ? btnW : computeW();
 
-  if (!resolvedBtnW) return <div ref={wrapperRef} style={{ height: `${60 * scale}px` }} />;
+  if (!resolvedBtnW) return (
+    <div ref={wrapperRef} style={{ height: `${60 * scale}px` }} />
+  );
 
   const w = resolvedBtnW;
   const faceY = 4 + p * 5;
@@ -96,13 +133,18 @@ export function SquircleButton({
   const hi = colorMix(hb, 70, "white");
   const sh = colorMix(hd, 35, "black");
   const sideCount = Math.max(0, baseY - faceY);
+  const iconSize = Math.round((square ? 22 : 18) * scale);
 
   return (
     <div
       ref={wrapperRef}
-      className={`inline-block select-none cursor-pointer [-webkit-tap-highlight-color:transparent] ${fullWidth ? "w-full block" : ""} ${className}`}
+      className={[
+        "relative select-none cursor-pointer [-webkit-tap-highlight-color:transparent]",
+        fullWidth ? "block w-full" : "inline-block",
+        className,
+      ].join(" ")}
       style={{
-        width: fullWidth ? "100%" : `${(w + 10) * scale}px`,
+        width: fullWidth ? undefined : `${(w + 10) * scale}px`,
         height: `${60 * scale}px`,
       }}
       onPointerDown={() => setPressed(true)}
@@ -112,8 +154,8 @@ export function SquircleButton({
     >
       <svg
         viewBox={`0 0 ${w + 10} 60`}
-        style={{ width: "100%", height: "100%", overflow: "visible" }}
         preserveAspectRatio="none"
+        className="w-full h-full overflow-visible"
       >
         <defs>
           <filter id={`b${uid}`} x="-100%" y="-100%" width="300%" height="300%">
@@ -127,42 +169,41 @@ export function SquircleButton({
           </linearGradient>
         </defs>
 
-        {/* Sombra base */}
         <path d={squirclePath(w, 40, 18, 5, baseY)} fill={colorMix(hd, 60, "black")} filter={`url(#b${uid})`} />
-        {/* Lateral */}
-        <path d={squirclePath(w, 40, 18, 5, baseY)} fill={colorMix(hd, 80, "black")} stroke={floating ? hi : colorMix(hd, 50, "black")} strokeWidth={1} />
-        {/* Face lateral gradiente */}
+        <path d={squirclePath(w, 40, 18, 5, baseY)} fill={colorMix(hd, 80, "black")} stroke="rgba(151 160 177 / 0.7)" strokeWidth={1} />
         {Array.from({ length: sideCount }).map((_, k) => (
           <path key={k} d={squirclePath(w, 40, 18, 5, faceY + 1 + k)} fill={`url(#g${uid})`} />
         ))}
-        {/* Face superior */}
         <path
           d={squirclePath(w, 40, 18, 5, faceY)}
           fill={isWhite ? "#fff" : `#${hb}`}
-          stroke={isWhite ? "#e2e8f0" : hi}
+          stroke={isWhite ? "#DBE3EE" : hi}
           strokeWidth={1.5}
         />
-        {/* Label */}
-        <text
-          x={5 + w / 2}
-          y={20 + faceY}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fill={isWhite ? "#3b82f6" : "#fff"}
-          style={{ pointerEvents: "none", fontWeight: 900 }}
-        >
-          {icon && (
-            <tspan style={{ fontFamily: "Material Icons", fontSize: square ? "26px" : "20px" }} dy={1}>
-              {icon}
-            </tspan>
-          )}
-          {!square && (
-            <tspan dx={icon ? 8 : 0} dy={0} fontSize={15} style={{ letterSpacing: "1px", fontFamily: "system-ui" }}>
-              {upperLabel}
-            </tspan>
-          )}
-        </text>
       </svg>
+
+      {/* conteúdo: ícone + label */}
+      <div
+        className={[
+          "absolute inset-x-0 flex items-center justify-center pointer-events-none",
+          isWhite ? "text-blue-500" : "text-white",
+        ].join(" ")}
+        style={{
+          top: `${faceY * scale}px`,
+          height: `${40 * scale}px`,
+          gap: `${6 * scale}px`,
+        }}
+      >
+        {Icon && <Icon size={iconSize} strokeWidth={2.5} />}
+        {!square && upperLabel && (
+          <span
+            className="font-black tracking-[1px] font-sans leading-none"
+            style={{ fontSize: `${14 * scale}px` }}
+          >
+            {upperLabel}
+          </span>
+        )}
+      </div>
     </div>
   );
 }

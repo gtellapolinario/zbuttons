@@ -1,73 +1,198 @@
-# React + TypeScript + Vite
+# zbuttons
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Coleção de botões 3D para projetos **React + Tailwind CSS + shadcn/ui**.
 
-Currently, two official plugins are available:
+Dois componentes prontos para uso:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Componente | Técnica | Deps |
+|---|---|---|
+| `SquircleButton` | SVG squircle com depth layers | `lucide-react`, `class-variance-authority` |
+| `ButtonVar` | CSS 3D com slots tailwind-variants | `lucide-react`, `tailwind-variants` |
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Instalação rápida
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# clona e instala em qualquer projeto shadcn
+bash install-squircle-button.sh ../meu-projeto
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+O script detecta o package manager (npm/pnpm/yarn/bun), instala as dependências e copia os arquivos para `src/components/ui/`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Instalação manual
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install lucide-react class-variance-authority tailwind-variants
+```
+
+Copie para `src/components/ui/`:
+- `src/components/ui/SquircleButton.tsx`
+- `src/components/ui/squircle-button-variants.ts`
+- `src/components/ui/ButtonVar.tsx`
+
+---
+
+## SquircleButton
+
+Botão SVG 3D com forma squircle, efeito de profundidade animado ao pressionar e suporte a ícones Lucide.
+
+### Uso básico
+
+```tsx
+import { Rocket } from "lucide-react"
+import { SquircleButton } from "@/components/ui/SquircleButton"
+
+<SquircleButton variant="blue" label="Launch" icon={Rocket} />
+```
+
+### Paleta completa
+
+```tsx
+import { Palette } from "lucide-react"
+import { SquircleButton } from "@/components/ui/SquircleButton"
+import { BUTTON_VARIANTS } from "@/components/ui/squircle-button-variants"
+
+{BUTTON_VARIANTS.map((v) => (
+  <SquircleButton key={v} variant={v} size="palette" label={v} icon={Palette} />
+))}
+```
+
+### Props
+
+| Prop | Tipo | Default | Descrição |
+|---|---|---|---|
+| `variant` | `ButtonVariant` | `"blue"` | Cor do botão |
+| `size` | `ButtonSize` | `"default"` | Tamanho e modo |
+| `label` | `string` | `""` | Texto (exibido em caixa alta) |
+| `icon` | `LucideIcon` | — | Ícone Lucide |
+| `onClick` | `() => void` | — | Callback de clique |
+| `className` | `string` | `""` | Classes extras no wrapper |
+
+### Variants
+
+| `variant` | Cor |
+|---|---|
+| `blue` | Azul |
+| `green` | Verde |
+| `red` | Vermelho |
+| `orange` | Laranja |
+| `yellow` | Amarelo |
+| `teal` | Teal |
+| `pink` | Rosa |
+| `purple` | Roxo |
+| `slate` | Slate escuro |
+| `amber` | Âmbar |
+| `white` | Branco |
+
+### Sizes
+
+| `size` | Altura | Comportamento |
+|---|---|---|
+| `tiny` | 30px | Compacto |
+| `default` | 44px | Padrão |
+| `palette` | 44px | Para exibição em paleta |
+| `large` | 60px | Grande |
+| `full` | 44px | Largura total do container |
+| `square` | 44px | Apenas ícone, quadrado |
+| `floating` | 64px | Posição fixa, apenas ícone |
+
+### Exemplos por size
+
+```tsx
+import { Zap, Rocket, PartyPopper, ArrowLeftRight, Fingerprint } from "lucide-react"
+
+// Tiny
+<SquircleButton variant="blue" size="tiny" label="Tiny" icon={Zap} />
+
+// Default
+<SquircleButton variant="teal" size="default" label="Standard" icon={Rocket} />
+
+// Large
+<SquircleButton variant="pink" size="large" label="Large" icon={PartyPopper} />
+
+// Full width
+<SquircleButton variant="orange" size="full" label="Full Width" icon={ArrowLeftRight} />
+
+// Square (icon only)
+<SquircleButton variant="purple" size="square" icon={Fingerprint} />
+
+// Floating (fixed bottom-right)
+<div className="fixed bottom-12 right-12 z-50">
+  <SquircleButton variant="blue" size="floating" icon={Rocket} onClick={handleClick} />
+</div>
+```
+
+---
+
+## ButtonVar
+
+Botão 3D CSS puro com face frontal, camada lateral e sombra. Animação de press via Tailwind group-active.
+
+### Uso básico
+
+```tsx
+import { ButtonVar } from "@/components/ui/ButtonVar"
+
+<ButtonVar variant="blue" size="default">Click Me!</ButtonVar>
+```
+
+### Props
+
+| Prop | Tipo | Default | Descrição |
+|---|---|---|---|
+| `variant` | `"blue" \| "cream" \| "red" \| "green"` | `"blue"` | Cor do botão |
+| `size` | `"default" \| "sm" \| "lg"` | `"default"` | Tamanho do texto |
+| `children` | `ReactNode` | `"Click Me!"` | Conteúdo do botão |
+| + todos os atributos de `<button>` | | | |
+
+### Exemplos
+
+```tsx
+<ButtonVar variant="blue"  size="default">Enviar</ButtonVar>
+<ButtonVar variant="cream" size="sm">Cancelar</ButtonVar>
+<ButtonVar variant="red"   size="lg">Deletar</ButtonVar>
+<ButtonVar variant="green" size="default">Confirmar</ButtonVar>
+```
+
+---
+
+## Fonte recomendada (IBM Plex Sans)
+
+Os botões usam `font-sans` do Tailwind. Para o visual do preset shadcn instale a IBM Plex Sans:
+
+```bash
+npm install @fontsource-variable/ibm-plex-sans
+```
+
+Em `src/index.css`:
+
+```css
+@import '@fontsource-variable/ibm-plex-sans/wght.css';
+
+@theme inline {
+  --font-sans: 'IBM Plex Sans Variable', sans-serif;
+}
+```
+
+---
+
+## Stack
+
+- React 19
+- TypeScript 6
+- Vite 8
+- Tailwind CSS 4
+- shadcn/ui
+- lucide-react
+- class-variance-authority
+- tailwind-variants
+
+## Dev
+
+```bash
+npm install
+npm run dev      # http://localhost:5175
+npm run build
+npm run preview
 ```

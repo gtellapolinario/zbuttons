@@ -1,7 +1,12 @@
 // App.tsx
+import { Palette, Fingerprint, Zap, Rocket, PartyPopper, ArrowLeftRight } from "lucide-react";
 import { SquircleButton } from "@/components/ui/SquircleButton";
+import { BUTTON_VARIANTS } from "@/components/ui/squircle-button-variants";
+import { ButtonVar } from "@/components/ui/buttonVar";
 
-const PALETTE = ["blue","green","red","orange","yellow","teal","pink","purple","slate","amber","white"] as const;
+function handleTesteButton() {
+  console.log("TesteButton clicked");
+}
 
 export default function App() {
   return (
@@ -11,32 +16,45 @@ export default function App() {
         <section>
           <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Button Palette</h2>
           <div className="flex flex-wrap gap-4">
-            {PALETTE.map((c) => <SquircleButton key={c} color={c} label={c} icon="palette" />)}
+            {BUTTON_VARIANTS.map((v) => (
+              <SquircleButton key={v} variant={v} size="palette" label={v} icon={Palette} />
+            ))}
           </div>
         </section>
 
         <section>
           <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Square Icons</h2>
           <div className="flex flex-wrap gap-4">
-            {PALETTE.map((c) => <SquircleButton key={c} color={c} icon="fingerprint" square />)}
+            {BUTTON_VARIANTS.map((v) => (
+              <SquircleButton key={v} variant={v} size="square" icon={Fingerprint} />
+            ))}
           </div>
         </section>
 
         <section>
           <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Sizing & Layouts</h2>
           <div className="flex flex-wrap gap-4">
-            <SquircleButton color="blue"   label="Tiny"               height={30} icon="bolt" />
-            <SquircleButton color="teal"   label="Standard"           height={44} icon="rocket_launch" />
-            <SquircleButton color="pink"   label="Large & Long Label" height={60} icon="celebration" />
-            <SquircleButton color="orange" label="Full Width Button"  height={44} icon="width_full" fullWidth className="mt-4" />
+            <SquircleButton variant="blue"   size="tiny"    label="Tiny"               icon={Zap} />
+            <SquircleButton variant="teal"   size="default" label="Standard"           icon={Rocket} />
+            <SquircleButton variant="pink"   size="large"   label="Large & Long Label" icon={PartyPopper} />
+            <SquircleButton variant="orange" size="full"    label="Full Width Button"  icon={ArrowLeftRight} className="mt-4" />
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Sizing & Layouts</h2>
+          <div className="flex flex-wrap gap-4">
+            <ButtonVar variant="blue" size="default">Click Me!</ButtonVar>
+            <ButtonVar variant="cream" size="sm">Small</ButtonVar>
+            <ButtonVar variant="red" size="lg">Large</ButtonVar>
+            <ButtonVar variant="green" size="default">Green</ButtonVar>
           </div>
         </section>
 
       </div>
 
-      {/* Floating Button */}
       <div className="fixed bottom-12 right-12 z-50">
-        <SquircleButton color="blue" icon="rocket" height={64} square floating />
+        <SquircleButton variant="blue" size="floating" icon={Rocket} onClick={handleTesteButton} />
       </div>
     </div>
   );
