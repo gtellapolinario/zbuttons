@@ -20,26 +20,26 @@ const buttonVariants = tv({
   variants: {
     variant: {
       blue: {
-        top: "bg-gradient-to-tr from-blue-600 via-blue-200 to-blue-600",
-        bottom: "bg-gradient-to-tr from-blue-600 via-blue-400 to-blue-600",
+        top: "bg-linear-to-tr from-blue-600 via-blue-200 to-blue-600",
+        bottom: "bg-linear-to-tr from-blue-600 via-blue-400 to-blue-600",
         shadow: "bg-[rgb(140,140,140)]",
         text: "text-gray-900",
       },
       cream: {
-        top: "bg-gradient-to-tr from-amber-600 via-amber-200 to-amber-600",
-        bottom: "bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-600",
+        top: "bg-linear-to-tr from-amber-600 via-amber-200 to-amber-600",
+        bottom: "bg-linear-to-tr from-amber-600 via-amber-400 to-amber-600",
         shadow: "bg-[rgb(140,140,140)]",
         text: "text-[rgb(36,38,34)]",
       },
       red: {
-        top: "bg-gradient-to-tr from-red-600 via-red-300 to-red-600",
-        bottom: "bg-gradient-to-tr from-red-800 via-red-600 to-red-800",
+        top: "bg-linear-to-tr from-red-600 via-red-300 to-red-600",
+        bottom: "bg-linear-to-tr from-red-800 via-red-600 to-red-800",
         shadow: "bg-[rgb(140,140,140)]",
         text: "text-white",
       },
       green: {
-        top: "bg-gradient-to-tr from-green-600 via-green-300 to-green-600",
-        bottom: "bg-gradient-to-tr from-green-800 via-green-600 to-green-800",
+        top: "bg-linear-to-tr from-green-600 via-green-300 to-green-600",
+        bottom: "bg-linear-to-tr from-green-800 via-green-600 to-green-800",
         shadow: "bg-[rgb(140,140,140)]",
         text: "text-white",
       },
