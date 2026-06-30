@@ -1,8 +1,7 @@
 // App.tsx
 import { Palette, Fingerprint, Zap, Rocket, PartyPopper, ArrowLeftRight } from "lucide-react";
-import { SquircleButton } from "@/components/ui/SquircleButton";
-import { BUTTON_VARIANTS } from "@/components/ui/squircle-button-variants";
-import { ButtonVar } from "@/components/ui/buttonVar";
+import { SquircleButton, BUTTON_VARIANTS } from "@c/ui/squircle-button/index";
+import { ButtonVar } from "@c/ui/buttonVar";
 
 function handleTesteButton() {
   console.log("TesteButton clicked");
@@ -23,6 +22,34 @@ export default function App() {
         </section>
 
         <section>
+          <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Button mini</h2>
+          <div className="flex flex-wrap gap-4">
+            {BUTTON_VARIANTS.map((v) => (
+              <SquircleButton key={v} variant={v} size="mini" label={v} icon={Palette} />
+            ))}
+          </div>
+        </section>
+
+
+        <section>
+          <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Button mini2</h2>
+          <div className="flex flex-wrap gap-4">
+            {BUTTON_VARIANTS.map((v) => (
+              <SquircleButton key={v} variant={v} size="mini2" label={v} icon={Palette} />
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Mini Square Icons</h2>
+          <div className="flex flex-wrap gap-4">
+            {BUTTON_VARIANTS.map((v) => (
+              <SquircleButton key={v} variant={v} size="minisquare" icon={Fingerprint} />
+            ))}
+          </div>
+        </section>
+
+        <section>
           <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Square Icons</h2>
           <div className="flex flex-wrap gap-4">
             {BUTTON_VARIANTS.map((v) => (
@@ -32,12 +59,21 @@ export default function App() {
         </section>
 
         <section>
+          <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Large Square Icons</h2>
+          <div className="flex flex-wrap gap-4">
+            {BUTTON_VARIANTS.map((v) => (
+              <SquircleButton key={v} variant={v} size="largesquare" icon={Fingerprint} />
+            ))}
+          </div>
+        </section>
+
+        <section>
           <h2 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Sizing & Layouts</h2>
           <div className="flex flex-wrap gap-4">
-            <SquircleButton variant="blue"   size="tiny"    label="Tiny"               icon={Zap} />
-            <SquircleButton variant="teal"   size="default" label="Standard"           icon={Rocket} />
-            <SquircleButton variant="pink"   size="large"   label="Large & Long Label" icon={PartyPopper} />
-            <SquircleButton variant="orange" size="full"    label="Full Width Button"  icon={ArrowLeftRight} className="mt-4" />
+            <SquircleButton variant="blue" size="tiny" label="Tiny" icon={Zap} />
+            <SquircleButton variant="teal" size="default" label="Standard" icon={Rocket} />
+            <SquircleButton variant="pink" size="large" label="Large & Long Label" icon={PartyPopper} />
+            <SquircleButton variant="orange" size="full" label="Full Width Button" icon={ArrowLeftRight} className="mt-4" />
           </div>
         </section>
 
@@ -53,9 +89,15 @@ export default function App() {
 
       </div>
 
-      <div className="fixed bottom-12 right-12 z-50">
+<div className="fixed flex items-center justify-center gap-4 bottom-12 right-12 z-50">
+      <div className="">
+        <SquircleButton variant="blue" size="mini_float" icon={Rocket} onClick={handleTesteButton} />
+      </div>
+
+      <div className="">
         <SquircleButton variant="blue" size="floating" icon={Rocket} onClick={handleTesteButton} />
       </div>
+</div>
     </div>
   );
 }
